@@ -8,7 +8,7 @@ var Util = (function () {
     }
     Util.w = function (rate) { return rate * Util.width; };
     Util.h = function (rate) { return rate * Util.height; };
-    Util.init = function (eui) {
+    Util.initial = function (eui) {
         this.width = eui.stage.stageWidth;
         this.height = eui.stage.stageHeight;
     };

@@ -20,8 +20,8 @@ var Player = (function (_super) {
         _this.button = null;
         _this.state = _this.stateNone;
         Player.I = _this;
-        _this.x = Util.w(0.5);
-        _this.y = Util.h(0.5) + Util.w(0.3);
+        _this.x = 0;
+        _this.y = 0;
         _this.z = 0;
         _this.vz = Util.w(PLAYER_SPEED_Z_PER_W);
         _this.radius = Util.w(PLAYER_RADIUS_PER_W);
@@ -45,6 +45,7 @@ var Player = (function (_super) {
     };
     Player.prototype.setStateRun = function () {
         this.state = this.stateRun;
+        this.buttonOffsetX = this.x - this.button.x;
     };
     Player.prototype.stateRun = function () {
         // controll x
@@ -52,10 +53,13 @@ var Player = (function (_super) {
             this.buttonOffsetX = this.x - this.button.x;
         }
         else {
-            var rate = 1.25;
+            var sensitivity = 2.5;
             var vx = this.button.x + this.buttonOffsetX - this.x;
-            this.x = Util.clamp(this.x + vx * rate, this.radius, Util.width - this.radius);
+            var rangeW = Util.w(1) - this.radius;
+            this.x = Util.clamp(this.x + vx * sensitivity, -rangeW, +rangeW);
             this.buttonOffsetX = this.x - this.button.x;
+            Ball3D.centerX = -this.x * 0.5;
+            Camera2D.x = Util.w(-0.5) + this.x * 0.5;
         }
         // progress z
         this.z += this.vz;

@@ -9,7 +9,7 @@ class Main extends eui.UILayer {
     }
  
     private addToStage() {
-        Util.init( this );
+        Util.initial( this );
         GameObject.initial( this.stage );
         // PhysicsObject.prepare( PIXEL_PER_METER );
         Camera2D.initial();

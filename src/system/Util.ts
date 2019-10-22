@@ -9,7 +9,7 @@ class Util{
     public static w( rate:number ){ return rate * Util.width;  }
     public static h( rate:number ){ return rate * Util.height; }
 
-    static init( eui:eui.UILayer ) {
+    static initial( eui:eui.UILayer ) {
         this.width  = eui.stage.stageWidth;
         this.height = eui.stage.stageHeight;
     }

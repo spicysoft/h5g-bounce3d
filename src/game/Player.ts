@@ -26,8 +26,8 @@ class Player extends GameObject{
 
         Player.I = this;
         
-        this.x = Util.w(0.5);
-        this.y = Util.h(0.5) + Util.w(0.3);
+        this.x = 0;
+        this.y = 0;
         this.z = 0;
         this.vz = Util.w(PLAYER_SPEED_Z_PER_W);
         this.radius = Util.w(PLAYER_RADIUS_PER_W);
@@ -54,6 +54,7 @@ class Player extends GameObject{
 
     setStateRun(){
         this.state = this.stateRun;
+        this.buttonOffsetX = this.x - this.button.x;
     }
     stateRun() {
         // controll x
@@ -61,10 +62,13 @@ class Player extends GameObject{
             this.buttonOffsetX = this.x - this.button.x;
         }
         else{
-            const rate = 1.25;
+            const sensitivity = 2.5;
             let vx = this.button.x + this.buttonOffsetX - this.x;
-            this.x = Util.clamp( this.x + vx * rate, this.radius, Util.width  - this.radius );
+            const rangeW = Util.w(1) - this.radius;
+            this.x = Util.clamp( this.x + vx * sensitivity, -rangeW, +rangeW );
             this.buttonOffsetX = this.x - this.button.x;
+            Ball3D.centerX = -this.x * 0.5;
+            Camera2D.x = Util.w(-0.5) + this.x * 0.5;
         }
 
         // progress z

@@ -6,8 +6,16 @@ const SHADOW_1_SY = 1/SHADOW_SY;
 
 class Ball3D {
 
+    static centerX:number;
+    static centerY:number;
+
     sphere:egret.Shape = null;
     shadow:egret.Shape = null;
+
+    static initial(){
+        Ball3D.centerX = 0;
+        Ball3D.centerY = Util.w(CAM_PERS_Y_PER_W);
+    }
 
     constructor( x:number, y:number, z:number, radius:number, color:number ) {
 
@@ -49,27 +57,27 @@ class Ball3D {
     }
 
     perspective( x:number, y:number, z:number ){
-        const floorY = Util.h(0.5 - 0.3) + Util.w(0.3);
-        const hover = y - floorY;
-        const shadowScale = Util.clamp( hover / Util.w(0.5), 0, 1 );
 
+        const shadowRangeY = Ball3D.centerY * 0.25;
+        const shadowScale = Util.clamp( (y + shadowRangeY) / shadowRangeY, 0, 1 );
+        
+        x += Ball3D.centerX;
+        y += Ball3D.centerY;
         z = z + Util.w(0.25);
         z = z / Util.w(0.25);
         let rpcZ = 1/z;
-        x = x - Util.w(0.5);
-        y = y - Util.h(0.3);
-        x = Util.w(0.5) + x * rpcZ;
-        y = Util.h(0.3) + y * rpcZ;
-        this.sphere.x = x;
-        this.sphere.y = y;
+        x = x * rpcZ;
+        y = y * rpcZ;
+        this.sphere.x = x - Ball3D.centerX;
+        this.sphere.y = y - Ball3D.centerY;
         this.sphere.scaleX =
         this.sphere.scaleY = rpcZ;
 
         // shadow on the floor
-        y = Util.h(0.5 - 0.3) + Util.w(0.3);
-        y = Util.h(0.3) + y * rpcZ;
-        this.shadow.x = x;
-        this.shadow.y = y;
+        y = Ball3D.centerY;
+        y = y * rpcZ;
+        this.shadow.x = this.sphere.x;
+        this.shadow.y = y - Ball3D.centerY;
         rpcZ = rpcZ * shadowScale;
         this.shadow.scaleX = rpcZ;
         this.shadow.scaleY = rpcZ * SHADOW_SY;

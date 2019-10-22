@@ -11,19 +11,22 @@ class DrawGround extends GameObject{
         GameObject.baseDisplay.addChildAt( this.display, 1 );
 
         const centerX = Util.w(0.5);
-        const centerY = Util.h(0.3);
-        const playerY = Util.h(0.5) + Util.w(0.3);
-        const roofY = centerY + (centerY - playerY);
+        const centerY = Util.h(0.5) + Util.w(CAMERA_Y_PER_W);
+        const floorY = centerY + Util.w(CAM_PERS_Y_PER_W);
+        const roofY = centerY + (centerY - floorY);
 
         shape.graphics.lineStyle(2, 0x606080);
-        shape.graphics.moveTo( centerX, centerY );
-        shape.graphics.lineTo(0,playerY);
-        shape.graphics.moveTo( centerX, centerY );
-        shape.graphics.lineTo(Util.width,playerY);
-        shape.graphics.moveTo( centerX, centerY );
-        shape.graphics.lineTo(0,roofY);
-        shape.graphics.moveTo( centerX, centerY );
-        shape.graphics.lineTo(Util.width,roofY);
+        shape.graphics.moveTo( 0, centerY );
+        shape.graphics.lineTo( Util.width, centerY );
+
+        // shape.graphics.moveTo( centerX, centerY );
+        // shape.graphics.lineTo(0,floorY);
+        // shape.graphics.moveTo( centerX, centerY );
+        // shape.graphics.lineTo(Util.width,floorY);
+        // shape.graphics.moveTo( centerX, centerY );
+        // shape.graphics.lineTo(0,roofY);
+        // shape.graphics.moveTo( centerX, centerY );
+        // shape.graphics.lineTo(Util.width,roofY);
     }
 
     update() {

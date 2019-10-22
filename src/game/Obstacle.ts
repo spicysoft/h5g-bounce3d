@@ -1,6 +1,6 @@
 // Liberapp 2019 - Tahiti Katagai
 // 障害物
-
+/*
 enum ObsType{
     Fixed,
     SlideR,
@@ -99,3 +99,4 @@ class Obstacle extends GameObject{
         return Util.clamp( -(z - Util.w(1.5)) / Util.w(0.5), 0, 1 );   // z1.5~1.0 to rate0~1
     }
 }
+*/

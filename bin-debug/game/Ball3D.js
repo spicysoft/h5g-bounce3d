@@ -11,6 +11,10 @@ var Ball3D = (function () {
         this.shadow = null;
         this.setDisplay(x, y, radius, color);
     }
+    Ball3D.initial = function () {
+        Ball3D.centerX = 0;
+        Ball3D.centerY = Util.w(CAM_PERS_Y_PER_W);
+    };
     Ball3D.prototype.destroy = function () {
         if (this.sphere) {
             this.sphere.parent.removeChild(this.sphere);
@@ -40,25 +44,24 @@ var Ball3D = (function () {
         GameObject.gameDisplay.addChild(this.sphere);
     };
     Ball3D.prototype.perspective = function (x, y, z) {
-        var floorY = Util.h(0.5 - 0.3) + Util.w(0.3);
-        var hover = y - floorY;
-        var shadowScale = Util.clamp(hover / Util.w(0.5), 0, 1);
+        var shadowRangeY = Ball3D.centerY * 0.25;
+        var shadowScale = Util.clamp((y + shadowRangeY) / shadowRangeY, 0, 1);
+        x += Ball3D.centerX;
+        y += Ball3D.centerY;
         z = z + Util.w(0.25);
         z = z / Util.w(0.25);
         var rpcZ = 1 / z;
-        x = x - Util.w(0.5);
-        y = y - Util.h(0.3);
-        x = Util.w(0.5) + x * rpcZ;
-        y = Util.h(0.3) + y * rpcZ;
-        this.sphere.x = x;
-        this.sphere.y = y;
+        x = x * rpcZ;
+        y = y * rpcZ;
+        this.sphere.x = x - Ball3D.centerX;
+        this.sphere.y = y - Ball3D.centerY;
         this.sphere.scaleX =
             this.sphere.scaleY = rpcZ;
         // shadow on the floor
-        y = Util.h(0.5 - 0.3) + Util.w(0.3);
-        y = Util.h(0.3) + y * rpcZ;
-        this.shadow.x = x;
-        this.shadow.y = y;
+        y = Ball3D.centerY;
+        y = y * rpcZ;
+        this.shadow.x = this.sphere.x;
+        this.shadow.y = y - Ball3D.centerY;
         rpcZ = rpcZ * shadowScale;
         this.shadow.scaleX = rpcZ;
         this.shadow.scaleY = rpcZ * SHADOW_SY;

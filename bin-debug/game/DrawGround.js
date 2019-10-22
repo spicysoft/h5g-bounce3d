@@ -18,19 +18,21 @@ var DrawGround = (function (_super) {
         _this.display = shape;
         GameObject.baseDisplay.addChildAt(_this.display, 1);
         var centerX = Util.w(0.5);
-        var centerY = Util.h(0.3);
-        var playerY = Util.h(0.5) + Util.w(0.3);
-        var roofY = centerY + (centerY - playerY);
+        var centerY = Util.h(0.5) + Util.w(CAMERA_Y_PER_W);
+        var floorY = centerY + Util.w(CAM_PERS_Y_PER_W);
+        var roofY = centerY + (centerY - floorY);
         shape.graphics.lineStyle(2, 0x606080);
-        shape.graphics.moveTo(centerX, centerY);
-        shape.graphics.lineTo(0, playerY);
-        shape.graphics.moveTo(centerX, centerY);
-        shape.graphics.lineTo(Util.width, playerY);
-        shape.graphics.moveTo(centerX, centerY);
-        shape.graphics.lineTo(0, roofY);
-        shape.graphics.moveTo(centerX, centerY);
-        shape.graphics.lineTo(Util.width, roofY);
+        shape.graphics.moveTo(0, centerY);
+        shape.graphics.lineTo(Util.width, centerY);
         return _this;
+        // shape.graphics.moveTo( centerX, centerY );
+        // shape.graphics.lineTo(0,floorY);
+        // shape.graphics.moveTo( centerX, centerY );
+        // shape.graphics.lineTo(Util.width,floorY);
+        // shape.graphics.moveTo( centerX, centerY );
+        // shape.graphics.lineTo(0,roofY);
+        // shape.graphics.moveTo( centerX, centerY );
+        // shape.graphics.lineTo(Util.width,roofY);
     }
     DrawGround.prototype.update = function () {
     };

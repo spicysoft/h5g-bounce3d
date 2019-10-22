@@ -7,15 +7,17 @@ var ROAD_WIDTH_PER_W = 1;
 var LANES = 5;
 var LANE_WIDTH_PER_W = 1 / LANES;
 var PLAYER_RADIUS_PER_W = LANE_WIDTH_PER_W / 2 * 0.9;
-var OBSTACLE_RADIUS_PER_W = PLAYER_RADIUS_PER_W;
 var PLAYER_SPEED_Z_PER_W = 1 / 30;
 var PLAYER_MAX_SPEED_Z_PER_W = 1 / 20;
+var CAMERA_Y_PER_W = -0.4;
+var CAM_PERS_Y_PER_W = -CAMERA_Y_PER_W * 2;
 var CAMERA_Z_OFFSET_PER_W = 0.25;
 var SAVE_KEY_BESTSCORE = "speedball-bestScore";
+var PAD_RADIUS_PER_W = PLAYER_RADIUS_PER_W * 2;
 var BACK_COLOR = 0x000000; // index.htmlで設定
 var FONT_COLOR = 0xc0c4d0;
 var PLAYER_COLOR = 0xff00b0;
-var OBSTACLE_COLOR = 0x0090f0;
+var PAD_COLOR = 0x0090f0;
 var SHADOW_COLOR = 0xf0f0ff;
 var LANE_COLOR = 0xe0e0e0;
 var Game = (function () {
@@ -24,6 +26,9 @@ var Game = (function () {
     Game.loadSceneGamePlay = function () {
         Game.speed = 0;
         Game.hard = 0;
+        Camera2D.x = Util.w(-0.5);
+        Camera2D.y = Util.h(-0.5) + Util.w(CAMERA_Y_PER_W);
+        Ball3D.initial();
         new DrawGround();
         new Player();
         new Wave();

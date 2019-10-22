@@ -18,7 +18,7 @@ var Main = (function (_super) {
         return _this;
     }
     Main.prototype.addToStage = function () {
-        Util.init(this);
+        Util.initial(this);
         GameObject.initial(this.stage);
         // PhysicsObject.prepare( PIXEL_PER_METER );
         Camera2D.initial();

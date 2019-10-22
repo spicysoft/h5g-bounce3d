@@ -1,18 +1,20 @@
 // Liberapp 2019 - Tahiti Katagai
-// 障害物
-/*
-enum ObsType{
+// ジャンプ足場
+
+enum PadType{
     Fixed,
     SlideR,
     SlideL,
-    JumpUp,
-    JumpOn,
+    ZoomIn,
+    ZoomOut,
+    RiseIn,
+    FallOut,
     Total
 }
 
-class Obstacle extends GameObject{
+class JumpPad extends GameObject{
 
-    type:ObsType;
+    type:PadType;
     x:number;
     y:number;
     z:number;
@@ -21,15 +23,15 @@ class Obstacle extends GameObject{
 
     ball3d:Ball3D = null;
 
-    constructor( type:ObsType, x:number, y:number, z:number ) {
+    constructor( type:PadType, x:number, y:number, z:number ) {
         super();
 
         this.type = type;
         this.x = x;
         this.y = y;
         this.z = z;
-        this.radius = Util.w( OBSTACLE_RADIUS_PER_W );
-        this.ball3d = new Ball3D( x, y, z, this.radius, OBSTACLE_COLOR );
+        this.radius = Util.w( PAD_RADIUS_PER_W );
+        this.ball3d = new Ball3D( x, y, z, this.radius, PAD_COLOR );
         this.ball3d.setAlpha( 1/64 );
     }
 
@@ -99,5 +101,3 @@ class Obstacle extends GameObject{
         return Util.clamp( -(z - Util.w(1.5)) / Util.w(0.5), 0, 1 );   // z1.5~1.0 to rate0~1
     }
 }
-*/ 
-//# sourceMappingURL=Obstacle.js.map

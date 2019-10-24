@@ -61,6 +61,9 @@ var Player = (function (_super) {
             Ball3D.centerX = -this.x * 0.5;
             Camera2D.x = Util.w(-0.5) + this.x * 0.5;
         }
+        // jump y
+        var rate = Math.abs(Math.sin((this.z / Util.w(PAD_INTER_Z_PER_W)) * Math.PI));
+        this.y = 0 + rate * Util.w(PLAYER_JUMP_Y_PER_W);
         // progress z
         this.z += this.vz;
     };

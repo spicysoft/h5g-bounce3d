@@ -1,14 +1,16 @@
 // Liberapp 2019 - Tahiti Katagai
 // ジャンプ足場
 
+const PAD_SY = 0.375;
+
 enum PadType{
     Fixed,
     SlideR,
     SlideL,
     ZoomIn,
     ZoomOut,
-    RiseIn,
-    FallOut,
+    Rise,
+    Fall,
     Total
 }
 
@@ -21,8 +23,6 @@ class JumpPad extends GameObject{
     radius:number;
     step:number = 0;
 
-    ball3d:Ball3D = null;
-
     constructor( type:PadType, x:number, y:number, z:number ) {
         super();
 
@@ -31,69 +31,88 @@ class JumpPad extends GameObject{
         this.y = y;
         this.z = z;
         this.radius = Util.w( PAD_RADIUS_PER_W );
-        this.ball3d = new Ball3D( x, y, z, this.radius, PAD_COLOR );
-        this.ball3d.setAlpha( 1/64 );
+        this.setDisplay( x, y, this.radius, PAD_COLOR );
+        this.display.alpha = 0;
+        this.perspective( this.x, this.y, this.z );
     }
 
-    onDestroy(){
-        this.ball3d.destroy();
-        this.ball3d = null;
+    setDisplay( x:number, y:number, radius:number, color:number ){
+        const shape = new egret.Shape();
+        this.display = shape;
+        GameObject.gameDisplay.addChildAt(shape, 0 );
+
+        shape.graphics.beginFill( color );
+        shape.graphics.drawCircle( 0, 0, radius );
+        shape.graphics.endFill();
+    }
+
+    perspective( x:number, y:number, z:number ){
+
+        z = z + Util.w(0.25);
+        z = z / Util.w(0.25);
+        let rpcZ = 1/z;
+        
+        x += Ball3D.centerX;
+        y += Ball3D.centerY;
+        x = x * rpcZ;
+        y = y * rpcZ;
+        this.display.x = x - Ball3D.centerX;
+        this.display.y = y - Ball3D.centerY;
+        this.display.scaleX = rpcZ;
+        this.display.scaleY = rpcZ * PAD_SY;
     }
 
     update() {
         // alpha fade in
-        if( this.ball3d.sphere.alpha < 1 ){
-            this.ball3d.setAlpha( this.ball3d.sphere.alpha + 1/64 );
+        if( this.display.alpha < 1 ){
+            this.display.alpha += ( 1/64 );
         }
 
         // move
         let x = this.x;
         let y = this.y;
         let z = this.z - Player.I.z;
+        let rate = this.getSlideRate( z );
         switch( this.type ){
-            case ObsType.Fixed: {
-                break;
-            }
-            case ObsType.SlideR: {
-                let rate = this.getSlideRate(z);
-                x = x + Util.lerp( -Util.w(LANE_WIDTH_PER_W), 0, rate );
-                break;
-            }
-            case ObsType.SlideL: {
-                let rate = this.getSlideRate(z);
-                x = x + Util.lerp( +Util.w(LANE_WIDTH_PER_W), 0, rate );
-                break;
-            }
-            case ObsType.JumpUp: {
-                let rate = Math.abs( Math.sin( ( z / Util.w(2) + 0.5 ) * Math.PI ) );
-                y = y - rate * Util.w(0.35);
-                break;
-            }
-            case ObsType.JumpOn: {
-                let rate = Math.abs( Math.sin( (z / Util.w(2) ) * Math.PI ) );
-                y = y - rate * Util.w(0.35);
-                break;
-            }
+            case PadType.Fixed:
+            this.perspective( x, y, z );
+            break;
+            case PadType.SlideR:
+            x = x + Util.lerp( -Util.w(LANE_WIDTH_PER_W*2), 0, rate );
+            this.perspective( x, y, z );
+            break;
+            case PadType.SlideL:
+            x = x + Util.lerp( +Util.w(LANE_WIDTH_PER_W*2), 0, rate );
+            this.perspective( x, y, z );
+            break;
+            case PadType.ZoomIn:
+            this.perspective( x, y, z );
+            this.display.scaleX *= rate;
+            this.display.scaleY *= rate;
+            break;
+            case PadType.ZoomOut:
+            this.perspective( x, y, z );
+            rate = 1 - rate;
+            this.display.scaleX *= rate;
+            this.display.scaleY *= rate;
+            if( rate >= 1 ) this.destroy();
+            break;
+            case PadType.Rise:
+            y = y + Util.lerp( Util.w(0.5), 0, rate );
+            this.perspective( x, y, z );
+            this.display.alpha = rate;
+            break;
+            case PadType.Fall:
+            y = y + Util.lerp( 0, +Util.w(0.5), rate );
+            this.perspective( x, y, z );
+            this.display.alpha = Util.clamp( this.display.alpha, 0, 1-rate );
+            if( rate >= 1 ) this.destroy();
+            break;
         }
-        this.ball3d.perspective( x, y, z );
 
-        // pass the player
-        if( this.step == 0 ){
-            if( z <= 0 ){
-                this.step = 1;
-                this.ball3d.setShapeFront();
-                // check hit
-                let dx = Player.I.x - x;
-                let dy = Player.I.y - y;
-                if( dx**2+dy**2 < this.radius**2+Player.I.radius**2 ){
-                    Player.I.setStateMiss();
-                }
-            }
-        }
-        else{
-            if( z <= -Util.w(0.25) ){
-                this.destroy();
-            }
+        // pass away
+        if( z <= -Util.w(0.25) ){
+            this.destroy();
         }
     }
 
@@ -101,3 +120,4 @@ class JumpPad extends GameObject{
         return Util.clamp( -(z - Util.w(1.5)) / Util.w(0.5), 0, 1 );   // z1.5~1.0 to rate0~1
     }
 }
+

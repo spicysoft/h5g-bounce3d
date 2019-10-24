@@ -10,6 +10,7 @@ var __extends = this && this.__extends || function __extends(t, e) {
 for (var i in e) e.hasOwnProperty(i) && (t[i] = e[i]);
 r.prototype = e.prototype, t.prototype = new r();
 };
+var PAD_SY = 0.375;
 var PadType;
 (function (PadType) {
     PadType[PadType["Fixed"] = 0] = "Fixed";
@@ -17,8 +18,8 @@ var PadType;
     PadType[PadType["SlideL"] = 2] = "SlideL";
     PadType[PadType["ZoomIn"] = 3] = "ZoomIn";
     PadType[PadType["ZoomOut"] = 4] = "ZoomOut";
-    PadType[PadType["RiseIn"] = 5] = "RiseIn";
-    PadType[PadType["FallOut"] = 6] = "FallOut";
+    PadType[PadType["Rise"] = 5] = "Rise";
+    PadType[PadType["Fall"] = 6] = "Fall";
     PadType[PadType["Total"] = 7] = "Total";
 })(PadType || (PadType = {}));
 var JumpPad = (function (_super) {
@@ -26,72 +27,88 @@ var JumpPad = (function (_super) {
     function JumpPad(type, x, y, z) {
         var _this = _super.call(this) || this;
         _this.step = 0;
-        _this.ball3d = null;
         _this.type = type;
         _this.x = x;
         _this.y = y;
         _this.z = z;
         _this.radius = Util.w(PAD_RADIUS_PER_W);
-        _this.ball3d = new Ball3D(x, y, z, _this.radius, PAD_COLOR);
-        _this.ball3d.setAlpha(1 / 64);
+        _this.setDisplay(x, y, _this.radius, PAD_COLOR);
+        _this.display.alpha = 0;
+        _this.perspective(_this.x, _this.y, _this.z);
         return _this;
     }
-    JumpPad.prototype.onDestroy = function () {
-        this.ball3d.destroy();
-        this.ball3d = null;
+    JumpPad.prototype.setDisplay = function (x, y, radius, color) {
+        var shape = new egret.Shape();
+        this.display = shape;
+        GameObject.gameDisplay.addChildAt(shape, 0);
+        shape.graphics.beginFill(color);
+        shape.graphics.drawCircle(0, 0, radius);
+        shape.graphics.endFill();
+    };
+    JumpPad.prototype.perspective = function (x, y, z) {
+        z = z + Util.w(0.25);
+        z = z / Util.w(0.25);
+        var rpcZ = 1 / z;
+        x += Ball3D.centerX;
+        y += Ball3D.centerY;
+        x = x * rpcZ;
+        y = y * rpcZ;
+        this.display.x = x - Ball3D.centerX;
+        this.display.y = y - Ball3D.centerY;
+        this.display.scaleX = rpcZ;
+        this.display.scaleY = rpcZ * PAD_SY;
     };
     JumpPad.prototype.update = function () {
         // alpha fade in
-        if (this.ball3d.sphere.alpha < 1) {
-            this.ball3d.setAlpha(this.ball3d.sphere.alpha + 1 / 64);
+        if (this.display.alpha < 1) {
+            this.display.alpha += (1 / 64);
         }
         // move
         var x = this.x;
         var y = this.y;
         var z = this.z - Player.I.z;
+        var rate = this.getSlideRate(z);
         switch (this.type) {
-            case ObsType.Fixed: {
+            case PadType.Fixed:
+                this.perspective(x, y, z);
                 break;
-            }
-            case ObsType.SlideR: {
-                var rate = this.getSlideRate(z);
-                x = x + Util.lerp(-Util.w(LANE_WIDTH_PER_W), 0, rate);
+            case PadType.SlideR:
+                x = x + Util.lerp(-Util.w(LANE_WIDTH_PER_W * 2), 0, rate);
+                this.perspective(x, y, z);
                 break;
-            }
-            case ObsType.SlideL: {
-                var rate = this.getSlideRate(z);
-                x = x + Util.lerp(+Util.w(LANE_WIDTH_PER_W), 0, rate);
+            case PadType.SlideL:
+                x = x + Util.lerp(+Util.w(LANE_WIDTH_PER_W * 2), 0, rate);
+                this.perspective(x, y, z);
                 break;
-            }
-            case ObsType.JumpUp: {
-                var rate = Math.abs(Math.sin((z / Util.w(2) + 0.5) * Math.PI));
-                y = y - rate * Util.w(0.35);
+            case PadType.ZoomIn:
+                this.perspective(x, y, z);
+                this.display.scaleX *= rate;
+                this.display.scaleY *= rate;
                 break;
-            }
-            case ObsType.JumpOn: {
-                var rate = Math.abs(Math.sin((z / Util.w(2)) * Math.PI));
-                y = y - rate * Util.w(0.35);
+            case PadType.ZoomOut:
+                this.perspective(x, y, z);
+                rate = 1 - rate;
+                this.display.scaleX *= rate;
+                this.display.scaleY *= rate;
+                if (rate >= 1)
+                    this.destroy();
                 break;
-            }
+            case PadType.Rise:
+                y = y + Util.lerp(Util.w(0.5), 0, rate);
+                this.perspective(x, y, z);
+                this.display.alpha = rate;
+                break;
+            case PadType.Fall:
+                y = y + Util.lerp(0, +Util.w(0.5), rate);
+                this.perspective(x, y, z);
+                this.display.alpha = Util.clamp(this.display.alpha, 0, 1 - rate);
+                if (rate >= 1)
+                    this.destroy();
+                break;
         }
-        this.ball3d.perspective(x, y, z);
-        // pass the player
-        if (this.step == 0) {
-            if (z <= 0) {
-                this.step = 1;
-                this.ball3d.setShapeFront();
-                // check hit
-                var dx = Player.I.x - x;
-                var dy = Player.I.y - y;
-                if (Math.pow(dx, 2) + Math.pow(dy, 2) < Math.pow(this.radius, 2) + Math.pow(Player.I.radius, 2)) {
-                    Player.I.setStateMiss();
-                }
-            }
-        }
-        else {
-            if (z <= -Util.w(0.25)) {
-                this.destroy();
-            }
+        // pass away
+        if (z <= -Util.w(0.25)) {
+            this.destroy();
         }
     };
     JumpPad.prototype.getSlideRate = function (z) {

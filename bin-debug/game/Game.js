@@ -3,17 +3,19 @@
 var __reflect = (this && this.__reflect) || function (p, c, t) {
     p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
 };
+var SAVE_KEY_BESTSCORE = "bounce3d-bestScore";
 var ROAD_WIDTH_PER_W = 1;
-var LANES = 5;
-var LANE_WIDTH_PER_W = 1 / LANES;
-var PLAYER_RADIUS_PER_W = LANE_WIDTH_PER_W / 2 * 0.9;
-var PLAYER_SPEED_Z_PER_W = 1 / 30;
-var PLAYER_MAX_SPEED_Z_PER_W = 1 / 20;
+var LANES = 8;
+var LANE_WIDTH_PER_W = 1.75 / LANES;
+var PLAYER_RADIUS_PER_W = 0.1;
+var PLAYER_SPEED_Z_PER_W = 1 / 75;
+var PLAYER_MAX_SPEED_Z_PER_W = 1 / 60;
+var PLAYER_JUMP_Y_PER_W = -0.3;
 var CAMERA_Y_PER_W = -0.4;
 var CAM_PERS_Y_PER_W = -CAMERA_Y_PER_W * 2;
 var CAMERA_Z_OFFSET_PER_W = 0.25;
-var SAVE_KEY_BESTSCORE = "speedball-bestScore";
-var PAD_RADIUS_PER_W = PLAYER_RADIUS_PER_W * 2;
+var PAD_RADIUS_PER_W = PLAYER_RADIUS_PER_W * 3;
+var PAD_INTER_Z_PER_W = 0.5;
 var BACK_COLOR = 0x000000; // index.htmlで設定
 var FONT_COLOR = 0xc0c4d0;
 var PLAYER_COLOR = 0xff00b0;

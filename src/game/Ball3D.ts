@@ -11,6 +11,7 @@ class Ball3D {
 
     sphere:egret.Shape = null;
     shadow:egret.Shape = null;
+    radius:number;
 
     static initial(){
         Ball3D.centerX = 0;
@@ -18,7 +19,7 @@ class Ball3D {
     }
 
     constructor( x:number, y:number, z:number, radius:number, color:number ) {
-
+        this.radius = radius;
         this.setDisplay( x, y, radius, color );
     }
 
@@ -42,7 +43,8 @@ class Ball3D {
         this.sphere.graphics.endFill();
 
         this.shadow.graphics.beginFill( SHADOW_COLOR );
-        this.shadow.graphics.drawCircle( 0, radius*SHADOW_1_SY, radius );
+        // this.shadow.graphics.drawCircle( 0, radius*SHADOW_1_SY, radius );
+        this.shadow.graphics.drawCircle( 0, 0, radius );
         this.shadow.graphics.endFill();
     }
 
@@ -74,7 +76,7 @@ class Ball3D {
         this.sphere.scaleY = rpcZ;
 
         // shadow on the floor
-        y = Ball3D.centerY;
+        y = this.radius + Ball3D.centerY;
         y = y * rpcZ;
         this.shadow.x = this.sphere.x;
         this.shadow.y = y - Ball3D.centerY;

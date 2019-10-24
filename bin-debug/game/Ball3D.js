@@ -9,6 +9,7 @@ var Ball3D = (function () {
     function Ball3D(x, y, z, radius, color) {
         this.sphere = null;
         this.shadow = null;
+        this.radius = radius;
         this.setDisplay(x, y, radius, color);
     }
     Ball3D.initial = function () {
@@ -32,7 +33,8 @@ var Ball3D = (function () {
         this.sphere.graphics.drawCircle(0, 0, radius);
         this.sphere.graphics.endFill();
         this.shadow.graphics.beginFill(SHADOW_COLOR);
-        this.shadow.graphics.drawCircle(0, radius * SHADOW_1_SY, radius);
+        // this.shadow.graphics.drawCircle( 0, radius*SHADOW_1_SY, radius );
+        this.shadow.graphics.drawCircle(0, 0, radius);
         this.shadow.graphics.endFill();
     };
     Ball3D.prototype.setAlpha = function (alpha) {
@@ -58,7 +60,7 @@ var Ball3D = (function () {
         this.sphere.scaleX =
             this.sphere.scaleY = rpcZ;
         // shadow on the floor
-        y = Ball3D.centerY;
+        y = this.radius + Ball3D.centerY;
         y = y * rpcZ;
         this.shadow.x = this.sphere.x;
         this.shadow.y = y - Ball3D.centerY;

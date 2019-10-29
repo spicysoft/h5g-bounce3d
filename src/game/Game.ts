@@ -4,7 +4,7 @@
 const SAVE_KEY_BESTSCORE = "bounce3d-bestScore";
 
  const ROAD_WIDTH_PER_W = 1;
- const LANES = 8;
+ const LANES = 5;
  const LANE_WIDTH_PER_W = 1.75/LANES;
 
 const PLAYER_RADIUS_PER_W = 0.1;
@@ -15,9 +15,10 @@ const PLAYER_JUMP_Y_PER_W = -0.3;
 const CAMERA_Y_PER_W = -0.4;
 const CAM_PERS_Y_PER_W = -CAMERA_Y_PER_W * 2;
 const CAMERA_Z_OFFSET_PER_W = 0.25;
+const FAR_LIMIT_PER_W = 4;
 
 const PAD_RADIUS_PER_W = PLAYER_RADIUS_PER_W * 3;
-const PAD_INTER_Z_PER_W = 0.5;
+const PAD_STEP_Z_PER_W = 0.5;
 
 const BACK_COLOR = 0x000000;    // index.htmlで設定
 const FONT_COLOR = 0xc0c4d0;

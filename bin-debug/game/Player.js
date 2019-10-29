@@ -27,6 +27,7 @@ var Player = (function (_super) {
         _this.radius = Util.w(PLAYER_RADIUS_PER_W);
         _this.ball3d = new Ball3D(_this.x, _this.y, _this.z, _this.radius, PLAYER_COLOR);
         _this.button = new Button(null, 0, 0, 0.5, 0.5, 1, 1, 0x000000, 0.0, null); // 透明な全画面ボタン
+        _this.footStepZ = _this.z + Util.w(PAD_STEP_Z_PER_W);
         return _this;
     }
     Player.prototype.onDestroy = function () {
@@ -61,21 +62,33 @@ var Player = (function (_super) {
             Ball3D.centerX = -this.x * 0.5;
             Camera2D.x = Util.w(-0.5) + this.x * 0.5;
         }
-        // jump y
-        var rate = Math.abs(Math.sin((this.z / Util.w(PAD_INTER_Z_PER_W)) * Math.PI));
-        this.y = 0 + rate * Util.w(PLAYER_JUMP_Y_PER_W);
         // progress z
         this.z += this.vz;
+        // jump y
+        var rate = Math.abs(Math.sin((this.z / Util.w(PAD_STEP_Z_PER_W)) * Math.PI));
+        this.y = 0 + rate * Util.w(PLAYER_JUMP_Y_PER_W);
+        // foot step 
+        if (this.footStepZ <= this.z) {
+            this.footStepZ += Util.w(PAD_STEP_Z_PER_W);
+            if (JumpPad.detectPad(this.x, this.z)) {
+                Score.I.addPoint();
+            }
+            else {
+                this.setStateMiss();
+            }
+        }
     };
     Player.prototype.setStateMiss = function () {
         if (this.state == this.stateMiss)
             return;
         new GameOver();
         this.state = this.stateMiss;
-        new EffectCircle(this.x, this.y, this.radius, PLAYER_COLOR);
-        EffectLine.create(this.x, this.y, this.radius, PLAYER_COLOR, 8);
+        // new EffectCircle( this.x, this.y, this.radius, PLAYER_COLOR );
+        EffectLine.create(this.x, this.y, this.radius, PLAYER_COLOR, 4);
+        this.ball3d.shadow.alpha = 0;
     };
     Player.prototype.stateMiss = function () {
+        this.y += Util.w(PLAYER_JUMP_Y_PER_W) * -0.15; // fall
     };
     Player.I = null;
     return Player;

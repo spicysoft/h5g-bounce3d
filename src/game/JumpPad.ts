@@ -16,6 +16,8 @@ enum PadType{
 
 class JumpPad extends GameObject{
 
+    private static pads: JumpPad[] = [];
+
     type:PadType;
     x:number;
     y:number;
@@ -26,6 +28,8 @@ class JumpPad extends GameObject{
     constructor( type:PadType, x:number, y:number, z:number ) {
         super();
 
+        JumpPad.pads.push(this);
+
         this.type = type;
         this.x = x;
         this.y = y;
@@ -34,6 +38,10 @@ class JumpPad extends GameObject{
         this.setDisplay( x, y, this.radius, PAD_COLOR );
         this.display.alpha = 0;
         this.perspective( this.x, this.y, this.z );
+    }
+
+    onDestroy(){
+        JumpPad.pads = JumpPad.pads.filter( obj => obj != this );
     }
 
     setDisplay( x:number, y:number, radius:number, color:number ){
@@ -63,15 +71,15 @@ class JumpPad extends GameObject{
     }
 
     update() {
-        // alpha fade in
-        if( this.display.alpha < 1 ){
-            this.display.alpha += ( 1/64 );
-        }
-
-        // move
         let x = this.x;
         let y = this.y;
         let z = this.z - Player.I.z;
+
+        // alpha fade in
+        const far = Util.w( FAR_LIMIT_PER_W );
+        this.display.alpha = Util.clamp( -(z - far) / (far * 0.2), 0, 1 );
+
+        // move
         let rate = this.getSlideRate( z );
         switch( this.type ){
             case PadType.Fixed:
@@ -117,7 +125,23 @@ class JumpPad extends GameObject{
     }
 
     getSlideRate( z:number ):number{
-        return Util.clamp( -(z - Util.w(1.5)) / Util.w(0.5), 0, 1 );   // z1.5~1.0 to rate0~1
+        return Util.clamp( -(z - Util.w(1.2)) / Util.w(0.5), 0, 1 );   // z1.2~1.0 to rate0~1
+    }
+
+    static detectPad( x:number, z:number ):boolean {        
+        let flag = false;
+        const r = Util.w(PAD_RADIUS_PER_W);
+        const rr = r ** 2;
+        JumpPad.pads.forEach( p => {
+            let dx = p.x - x;
+            let dz = p.z - z;
+            if( dz <= r ){
+                if( dx**2 <= rr && dz**2 <= rr ){
+                    flag = true;
+                }
+            }
+        });
+        return flag;
     }
 }
 

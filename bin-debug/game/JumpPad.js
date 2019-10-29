@@ -27,6 +27,7 @@ var JumpPad = (function (_super) {
     function JumpPad(type, x, y, z) {
         var _this = _super.call(this) || this;
         _this.step = 0;
+        JumpPad.pads.push(_this);
         _this.type = type;
         _this.x = x;
         _this.y = y;
@@ -37,6 +38,10 @@ var JumpPad = (function (_super) {
         _this.perspective(_this.x, _this.y, _this.z);
         return _this;
     }
+    JumpPad.prototype.onDestroy = function () {
+        var _this = this;
+        JumpPad.pads = JumpPad.pads.filter(function (obj) { return obj != _this; });
+    };
     JumpPad.prototype.setDisplay = function (x, y, radius, color) {
         var shape = new egret.Shape();
         this.display = shape;
@@ -59,14 +64,13 @@ var JumpPad = (function (_super) {
         this.display.scaleY = rpcZ * PAD_SY;
     };
     JumpPad.prototype.update = function () {
-        // alpha fade in
-        if (this.display.alpha < 1) {
-            this.display.alpha += (1 / 64);
-        }
-        // move
         var x = this.x;
         var y = this.y;
         var z = this.z - Player.I.z;
+        // alpha fade in
+        var far = Util.w(FAR_LIMIT_PER_W);
+        this.display.alpha = Util.clamp(-(z - far) / (far * 0.2), 0, 1);
+        // move
         var rate = this.getSlideRate(z);
         switch (this.type) {
             case PadType.Fixed:
@@ -112,8 +116,24 @@ var JumpPad = (function (_super) {
         }
     };
     JumpPad.prototype.getSlideRate = function (z) {
-        return Util.clamp(-(z - Util.w(1.5)) / Util.w(0.5), 0, 1); // z1.5~1.0 to rate0~1
+        return Util.clamp(-(z - Util.w(1.2)) / Util.w(0.5), 0, 1); // z1.2~1.0 to rate0~1
     };
+    JumpPad.detectPad = function (x, z) {
+        var flag = false;
+        var r = Util.w(PAD_RADIUS_PER_W);
+        var rr = Math.pow(r, 2);
+        JumpPad.pads.forEach(function (p) {
+            var dx = p.x - x;
+            var dz = p.z - z;
+            if (dz <= r) {
+                if (Math.pow(dx, 2) <= rr && Math.pow(dz, 2) <= rr) {
+                    flag = true;
+                }
+            }
+        });
+        return flag;
+    };
+    JumpPad.pads = [];
     return JumpPad;
 }(GameObject));
 __reflect(JumpPad.prototype, "JumpPad");

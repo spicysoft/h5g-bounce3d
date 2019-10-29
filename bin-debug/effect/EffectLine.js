@@ -29,7 +29,7 @@ var EffectLine = (function (_super) {
         for (var i = 0; i < count; i++) {
             var a = rand() * Math.PI * 2;
             var vx = Math.cos(a);
-            var vy = -Math.sin(a);
+            var vy = Math.sin(a);
             var vr = r * (2 + i);
             new EffectLine(x + vx * r, y + vy * r, vx * vr, vy * vr, color);
         }

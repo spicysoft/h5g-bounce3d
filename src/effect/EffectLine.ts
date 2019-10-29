@@ -14,8 +14,8 @@ class EffectLine extends GameObject{
     static create( x:number, y:number, r:number, color:number, count:number=4 ){
         for( let i=0 ; i<count ; i++ ) {
             let a = rand() * Math.PI * 2;
-            let vx =  Math.cos( a );
-            let vy = -Math.sin( a );
+            let vx = Math.cos( a );
+            let vy = Math.sin( a );
             let vr = r * ( 2 + i );
             new EffectLine(
                 x + vx * r,

@@ -14,7 +14,6 @@ var Player = (function (_super) {
     __extends(Player, _super);
     function Player() {
         var _this = _super.call(this) || this;
-        _this.vz = 0;
         _this.ball3d = null;
         _this.buttonOffsetX = 0;
         _this.button = null;
@@ -23,7 +22,6 @@ var Player = (function (_super) {
         _this.x = 0;
         _this.y = 0;
         _this.z = 0;
-        _this.vz = Util.w(PLAYER_SPEED_Z_PER_W);
         _this.radius = Util.w(PLAYER_RADIUS_PER_W);
         _this.ball3d = new Ball3D(_this.x, _this.y, _this.z, _this.radius, PLAYER_COLOR);
         _this.button = new Button(null, 0, 0, 0.5, 0.5, 1, 1, 0x000000, 0.0, null); // 透明な全画面ボタン
@@ -63,7 +61,7 @@ var Player = (function (_super) {
             Camera2D.x = Util.w(-0.5) + this.x * 0.5;
         }
         // progress z
-        this.z += this.vz;
+        this.z += Game.speed;
         // jump y
         var rate = Math.abs(Math.sin((this.z / Util.w(PAD_STEP_Z_PER_W)) * Math.PI));
         this.y = 0 + rate * Util.w(PLAYER_JUMP_Y_PER_W);

@@ -20,6 +20,10 @@ class Util{
         return value;
     }
 
+    static clamp01(value:number){
+        return Util.clamp(value,0,1);
+    }
+
     static lerp( src:number, dst:number, rate01:number ){
         return src + (dst-src) * rate01;
     }

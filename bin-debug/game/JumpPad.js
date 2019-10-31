@@ -33,7 +33,8 @@ var JumpPad = (function (_super) {
         _this.y = y;
         _this.z = z;
         _this.radius = Util.w(PAD_RADIUS_PER_W);
-        _this.setDisplay(x, y, _this.radius, PAD_COLOR);
+        _this.slideZ = Util.w(Util.lerp(1.0, 0.7, Game.hard));
+        _this.setDisplay(x, y, _this.radius, randBool() ? PAD_COLOR1 : PAD_COLOR2);
         _this.display.alpha = 0;
         _this.perspective(_this.x, _this.y, _this.z);
         return _this;
@@ -77,11 +78,11 @@ var JumpPad = (function (_super) {
                 this.perspective(x, y, z);
                 break;
             case PadType.SlideR:
-                x = x + Util.lerp(-Util.w(LANE_WIDTH_PER_W * 2), 0, rate);
+                x = x + Util.lerp(-Util.w(LANE_WIDTH_PER_W * 1), 0, rate);
                 this.perspective(x, y, z);
                 break;
             case PadType.SlideL:
-                x = x + Util.lerp(+Util.w(LANE_WIDTH_PER_W * 2), 0, rate);
+                x = x + Util.lerp(+Util.w(LANE_WIDTH_PER_W * 1), 0, rate);
                 this.perspective(x, y, z);
                 break;
             case PadType.ZoomIn:
@@ -116,7 +117,7 @@ var JumpPad = (function (_super) {
         }
     };
     JumpPad.prototype.getSlideRate = function (z) {
-        return Util.clamp(-(z - Util.w(1.2)) / Util.w(0.5), 0, 1); // z1.2~1.0 to rate0~1
+        return Util.clamp(-(z - this.slideZ) / Util.w(0.5), 0, 1); // z1.0~0.5 to rate0~1
     };
     JumpPad.detectPad = function (x, z) {
         var flag = false;
@@ -126,7 +127,7 @@ var JumpPad = (function (_super) {
             var dx = p.x - x;
             var dz = p.z - z;
             if (dz <= r) {
-                if (Math.pow(dx, 2) <= rr && Math.pow(dz, 2) <= rr) {
+                if (Math.pow(dx, 2) + Math.pow((dz * 4), 2) <= rr) {
                     flag = true;
                 }
             }

@@ -21,18 +21,10 @@ var DrawGround = (function (_super) {
         var centerY = Util.h(0.5) + Util.w(CAMERA_Y_PER_W);
         var floorY = centerY + Util.w(CAM_PERS_Y_PER_W);
         var roofY = centerY + (centerY - floorY);
-        shape.graphics.lineStyle(2, 0x606080);
+        shape.graphics.lineStyle(5, 0xc0c0f0);
         shape.graphics.moveTo(0, centerY);
         shape.graphics.lineTo(Util.width, centerY);
         return _this;
-        // shape.graphics.moveTo( centerX, centerY );
-        // shape.graphics.lineTo(0,floorY);
-        // shape.graphics.moveTo( centerX, centerY );
-        // shape.graphics.lineTo(Util.width,floorY);
-        // shape.graphics.moveTo( centerX, centerY );
-        // shape.graphics.lineTo(0,roofY);
-        // shape.graphics.moveTo( centerX, centerY );
-        // shape.graphics.lineTo(Util.width,roofY);
     }
     DrawGround.prototype.update = function () {
     };

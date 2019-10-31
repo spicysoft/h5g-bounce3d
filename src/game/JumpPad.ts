@@ -23,6 +23,7 @@ class JumpPad extends GameObject{
     y:number;
     z:number;
     radius:number;
+    slideZ:number;
     step:number = 0;
 
     constructor( type:PadType, x:number, y:number, z:number ) {
@@ -35,7 +36,8 @@ class JumpPad extends GameObject{
         this.y = y;
         this.z = z;
         this.radius = Util.w( PAD_RADIUS_PER_W );
-        this.setDisplay( x, y, this.radius, PAD_COLOR );
+        this.slideZ = Util.w( Util.lerp(1.0, 0.7, Game.hard) );
+        this.setDisplay( x, y, this.radius, randBool() ? PAD_COLOR1 : PAD_COLOR2 );
         this.display.alpha = 0;
         this.perspective( this.x, this.y, this.z );
     }
@@ -86,11 +88,11 @@ class JumpPad extends GameObject{
             this.perspective( x, y, z );
             break;
             case PadType.SlideR:
-            x = x + Util.lerp( -Util.w(LANE_WIDTH_PER_W*2), 0, rate );
+            x = x + Util.lerp( -Util.w(LANE_WIDTH_PER_W*1), 0, rate );
             this.perspective( x, y, z );
             break;
             case PadType.SlideL:
-            x = x + Util.lerp( +Util.w(LANE_WIDTH_PER_W*2), 0, rate );
+            x = x + Util.lerp( +Util.w(LANE_WIDTH_PER_W*1), 0, rate );
             this.perspective( x, y, z );
             break;
             case PadType.ZoomIn:
@@ -125,7 +127,7 @@ class JumpPad extends GameObject{
     }
 
     getSlideRate( z:number ):number{
-        return Util.clamp( -(z - Util.w(1.2)) / Util.w(0.5), 0, 1 );   // z1.2~1.0 to rate0~1
+        return Util.clamp( -(z - this.slideZ) / Util.w(0.5), 0, 1 );   // z1.0~0.5 to rate0~1
     }
 
     static detectPad( x:number, z:number ):boolean {        
@@ -136,7 +138,7 @@ class JumpPad extends GameObject{
             let dx = p.x - x;
             let dz = p.z - z;
             if( dz <= r ){
-                if( dx**2 <= rr && dz**2 <= rr ){
+                if( dx**2 + (dz*4)**2 <= rr ){
                     flag = true;
                 }
             }

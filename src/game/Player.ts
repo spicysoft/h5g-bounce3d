@@ -13,7 +13,6 @@ class Player extends GameObject{
     x:number;
     y:number;
     z:number;
-    vz:number = 0;
     radius:number;
     ball3d:Ball3D = null;
     buttonOffsetX:number = 0;
@@ -30,7 +29,6 @@ class Player extends GameObject{
         this.x = 0;
         this.y = 0;
         this.z = 0;
-        this.vz = Util.w(PLAYER_SPEED_Z_PER_W);
         this.radius = Util.w(PLAYER_RADIUS_PER_W);
         this.ball3d = new Ball3D( this.x, this.y, this.z, this.radius, PLAYER_COLOR );
         this.button = new Button( null, 0, 0, 0.5, 0.5, 1, 1, 0x000000, 0.0, null ); // 透明な全画面ボタン
@@ -73,7 +71,7 @@ class Player extends GameObject{
             Camera2D.x = Util.w(-0.5) + this.x * 0.5;
         }
         // progress z
-        this.z += this.vz;
+        this.z += Game.speed;
 
         // jump y
         let rate = Math.abs( Math.sin( (this.z / Util.w(PAD_STEP_Z_PER_W) ) * Math.PI ) );

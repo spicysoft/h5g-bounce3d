@@ -19,6 +19,9 @@ var Util = (function () {
             value = max;
         return value;
     };
+    Util.clamp01 = function (value) {
+        return Util.clamp(value, 0, 1);
+    };
     Util.lerp = function (src, dst, rate01) {
         return src + (dst - src) * rate01;
     };

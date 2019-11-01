@@ -8,7 +8,7 @@ const SAVE_KEY_BESTSCORE = "bounce3d-bestScore";
  const LANE_WIDTH_PER_W = 2/LANES;
 
 const PLAYER_RADIUS_PER_W = 0.1;
-const PLAYER_SPEED_Z_PER_W = 1/200;
+const PLAYER_SPEED_Z_PER_W = 1/170;
 const PLAYER_MAX_SPEED_Z_PER_W = 1/70;
 const PLAYER_JUMP_Y_PER_W = -0.3;
 
@@ -21,8 +21,8 @@ const PAD_RADIUS_PER_W = LANE_WIDTH_PER_W; //PLAYER_RADIUS_PER_W * 3;
 const PAD_STEP_Z_PER_W = 0.25;
 
 const BACK_COLOR = 0xf0f0ff;    // index.htmlで設定
-const FONT_COLOR = 0xb0b4c0;
-const PLAYER_COLOR = 0xff8000;
+const FONT_COLOR = 0x9094a0;
+const PLAYER_COLOR = 0xffa020;
 const PAD_COLOR1 = 0x30e090;
 const PAD_COLOR2 = 0x30d0c0;
 const SHADOW_COLOR = BACK_COLOR;

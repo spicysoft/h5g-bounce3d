@@ -22,9 +22,9 @@ class Wave extends GameObject{
         //     return;
         // }
 
-        const speedRate = Util.clamp( Player.I.z / Util.w( 100 ), 0, 1 );
+        const speedRate = Util.clamp( Player.I.z / Util.w( 60 ), 0, 1 );
         Game.speed = Util.lerp( PLAYER_SPEED_Z_PER_W, PLAYER_MAX_SPEED_Z_PER_W, speedRate ) * Util.width;
-        Game.hard = Util.clamp( Player.I.z / Util.w( 50 ), 0, 1 );
+        Game.hard = Util.clamp( Player.I.z / Util.w( 30 ), 0, 1 );
 
         if( this.milestone - Util.w(FAR_LIMIT_PER_W) <= Player.I.z ){
             const maxLane = Math.floor( LANES/2 );
@@ -33,7 +33,7 @@ class Wave extends GameObject{
             let type = randI( 0, Util.lerp( PadType.SlideL+1, PadType.Total, Util.clamp01(Game.hard*2) ) );
             new JumpPad( type, lane*Util.w(LANE_WIDTH_PER_W), Util.w(PLAYER_RADIUS_PER_W), this.milestone );
 
-            let rate = 0.5;
+            let rate = Util.lerp( 0.4, 0.2, Game.hard );
             switch( type ){
                 case PadType.Fixed:
                 case PadType.ZoomIn:

@@ -15,7 +15,7 @@ class DrawGround extends GameObject{
         const floorY = centerY + Util.w(CAM_PERS_Y_PER_W);
         const roofY = centerY + (centerY - floorY);
 
-        shape.graphics.lineStyle(5, 0xc0c0f0);
+        shape.graphics.lineStyle(5, FONT_COLOR);
         shape.graphics.moveTo( 0, centerY );
         shape.graphics.lineTo( Util.width, centerY );
     }

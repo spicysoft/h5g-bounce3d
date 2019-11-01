@@ -1,7 +1,7 @@
-# 3Dスピード
+# れんぞくジャンプ
 疑似３D表現の奥方向ジャンプゲーム
 
-<開発中>
+<https://liberapp.net/applications/c34513b0-fc78-11e9-8e18-8342770a0631/information>
 
 ## ビルド方法
 
